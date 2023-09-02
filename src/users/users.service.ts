@@ -1,8 +1,11 @@
 import { Delete, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { User } from './interfaces/users.interfaces';
+import { NotificationsController } from 'src/notifications/notifications.controller';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class UsersService {
+    constructor(private readonly notifsService:NotificationsService){}
     users:User[]=[
         { id:1, first_name:"John", last_name:"Doe", sexe:"M", age:"50" },
         { id: 2, first_name: "Jane", last_name: "Smith", sexe: "F", age: "35" },
@@ -23,8 +26,14 @@ export class UsersService {
 
     ]
 
+    description(user:User, opration:string){
+        let description:string = user.first_name + " " + user.last_name + " " + opration
+        this.notifsService.create(description)
+    }
+
     create(user:User){
         this.users= [... this.users , user];
+        this.description(user, "has been created")
 
     }
 
@@ -61,7 +70,9 @@ export class UsersService {
         }
 
         this.users[index] = userToUpdate
+        this.description(user,"has been updated")
         return userToUpdate
+
     }
 
     delete(id:number):any{
@@ -70,6 +81,7 @@ export class UsersService {
             return new NotFoundException("User not found")
         }
         else{
+            this.description(this.users[index],"has been deleted")
             this.users.splice(index, 1);
         }
         return this.users
