@@ -3,34 +3,36 @@ import { UsersService } from './users.service';
 import { User } from './interfaces/users.interfaces';
 import { UsersDto } from './dto/create-user.dto';
 import { NotificationsService } from 'src/notifications/notifications.service';
+import { UserEntity } from './entities/users.entity';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService:UsersService){}
 
     @Post()
-    createUser(@Body() user:UsersDto): any{
-        this.usersService.create(user);
+    async createUser(@Body() user:UserEntity): Promise<UserEntity>{
+       return await this.usersService.create(user);
     }
 
     @Get()
-    readAll():User[]{
-        return this.usersService.readAll()
+    async readAll():Promise<UserEntity[]>{
+        return await this.usersService.readAll()
     }
 
     @Get(':id')
-    readOne(@Param('id') id:string){
-        return this.usersService.readOne(+id);
+    async readOne(@Param('id') id:string):Promise<UserEntity>{
+        return await this.usersService.readOne(+id);
     }
 
     @Patch(':id')
-    updateUser(@Param("id") id:string,@Body() user:UsersDto):any{
-        return  this.usersService.update(+id ,user) ;
+    async updateUser(@Param("id") id:string,@Body() user:UsersDto):Promise<UpdateResult>{
+        return await this.usersService.update(+id ,user) ;
     }
 
     @Delete(':id')
-    deleteUser(@Param ("id") id:string ): any{
-        return   this.usersService.delete(+id );
+    async deleteUser(@Param ("id") id:string ): Promise<DeleteResult>{
+        return await this.usersService.delete(+id );
         }
 
 

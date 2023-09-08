@@ -2,15 +2,14 @@ import { Delete, Injectable, NotAcceptableException, NotFoundException } from '@
 import { User } from './interfaces/users.interfaces';
 import { NotificationsController } from 'src/notifications/notifications.controller';
 import { NotificationsService } from 'src/notifications/notifications.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from './entities/users.entity';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly notifsService:NotificationsService){}
-    users:User[]=[
-        { id:1, first_name:"John", last_name:"Doe", sexe:"M", age:"50" },
-        { id: 2, first_name: "Jane", last_name: "Smith", sexe: "F", age: "35" },
-        { id: 3, first_name: "Michael", last_name: "Johnson", sexe: "M", age: "45" },
-        { id: 4, first_name: "Emily", last_name: "Brown", sexe: "F", age: "28" },
+    constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository <UserEntity>,  private readonly notifsService:NotificationsService){}
+    /*users:User[]=[
         { id: 5, first_name: "David", last_name: "Wilson", sexe: "M", age: "55" },
         { id: 6, first_name: "Sarah", last_name: "Jones", sexe: "F", age: "42" },
         { id: 7, first_name: "Robert", last_name: "Davis", sexe: "M", age: "38" },
@@ -24,31 +23,34 @@ export class UsersService {
         { id: 15, first_name: "Thomas", last_name: "Harris", sexe: "M", age: "44" },
 
 
-    ]
+    ]*/
 
     description(user:User, opration:string){
         let description:string = user.first_name + " " + user.last_name + " " + opration
         this.notifsService.create(description)
     }
 
-    create(user:User){
-        this.users= [... this.users , user];
+    async create(user:User):Promise<User>{
+        //this.users= [... this.users , user];
         this.description(user, "has been created")
+        return await this.userRepository.save(user)
 
     }
 
-    readAll():User[]{
-        return this.users
+    async readAll():Promise<User[]>{
+        //return this.users
+        return await this.userRepository.find()
 
     }
 
-    readOne(id:number):User{
-        return this.users[id-1]
+    async readOne(id:number):Promise<User>{
+        //return this.users[id-1]
+        return await this.userRepository.findOneBy({id})
 
     }
 
-    update(id:number, user:User):any{
-        const index = id-1
+    async update(id:number, user:User):Promise<UpdateResult>{
+        /*const index = id-1
         let userToUpdate:User;
         if (index>=this.users.length){
             return new NotAcceptableException("User not found")
@@ -69,22 +71,23 @@ export class UsersService {
             userToUpdate.sexe = user.sexe
         }
 
-        this.users[index] = userToUpdate
+        this.users[index] = userToUpdate*/
         this.description(user,"has been updated")
-        return userToUpdate
+        return await this.userRepository.update(id, user)
 
     }
 
-    delete(id:number):any{
-        const index = id-1
+    async delete(id:number):Promise<DeleteResult>{
+       /* const index = id-1
         if (index>this.users.length){
             return new NotFoundException("User not found")
         }
         else{
             this.description(this.users[index],"has been deleted")
-            this.users.splice(index, 1);
-        }
-        return this.users
+            //this.users.splice(index, 1);
+            this.userRepository.delete(id)
+        }*/
+        return await this.userRepository.delete(id)
     }
 
 
