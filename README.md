@@ -26,18 +26,18 @@ $ npm run start
 ```
 ## API Endpoints
 ### Users
-*GET /users : Récupérer tous les utilisateurs
+* GET /users : Récupérer tous les utilisateurs
 
-*GET /users/:id : Récupérer un utilisateur par son id
+* GET /users/:id : Récupérer un utilisateur par son id
 
-*POST /users : Créer un nouvel utilisateur
+* POST /users : Créer un nouvel utilisateur
 
-*PUT /users/: Mettre à jour un utilisateur par ID
+* PUT /users/: Mettre à jour un utilisateur par ID
 
-*DELETE /users/: Supprimer un utilisateur par ID
+* DELETE /users/: Supprimer un utilisateur par ID
 
-###Notifications
-*GET /notifications : Récupérer toutes les notifications
+### Notifications
+* GET /notifications : Récupérer toutes les notifications
 
-*GET /notifications/ : Récupérer une notification par ID
+* GET /notifications/ : Récupérer une notification par ID
 
